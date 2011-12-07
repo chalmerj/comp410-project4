@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Minix Real-Time Clock Driver Improvement #
+=======
+## Minix Real-Time Clock Driver Improvement ##
+>>>>>>> refs/remotes/comp410-project4/master
 
 This is a homework assignment (#4) for COMP410 [Fall 2011] - Operating Systems at Loyola University.
 
