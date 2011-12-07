@@ -2,3 +2,6 @@
 time
 time.d
 time.o
+read-device
+test-read
+output
