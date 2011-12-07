@@ -128,6 +128,7 @@ void get_time(struct tm *t)
                 if (read_register(RTC_REG_A) & RTC_A_UIP) continue;
 
                 t->tm_sec = read_register(RTC_SEC);
+		/* printf("t->tm_sec: %x\n",t->tm_sec); */
                 if (t->tm_sec != osec) {
                         /* Seconds changed.  First from -1, then because the
                          * clock ticked, which is what we're waiting for to
@@ -136,7 +137,7 @@ void get_time(struct tm *t)
                         osec = t->tm_sec;
                         n++;
                 }
-        } while (n < 2);
+        } while (osec < 0); /* Changed from n < 2 to osec */
 
         /* Read the other registers. */
         t->tm_min = read_register(RTC_MIN);
@@ -179,11 +180,11 @@ PRIVATE void time_from_cmos(buffer,size)
 {
 	struct tm tVal;
 
-	get_time(&tVal);	
+	get_time(&tVal);
 
 
-	snprintf(buffer, size, 
-		"%04d-%02d-%02d %02d:%02d:%02d\n", 
+	snprintf(buffer, size,
+		"%04d-%02d-%02d %02d:%02d:%02d\n",
 		tVal.tm_year + 1900, tVal.tm_mon + 1,
 		tVal.tm_mday, tVal.tm_hour, tVal.tm_min,
 		tVal.tm_sec);
@@ -202,9 +203,9 @@ PRIVATE int time_transfer(proc_nr, opcode, position, iov, nr_req)
 	printf("time_transfer()\n");
 
 	time_from_cmos(buffer, sizeof(buffer));
-	
-	bytes = strlen(buffer) - position.lo < iov->iov_size 
-		? strlen(buffer) - position.lo 
+
+	bytes = strlen(buffer) - position.lo < iov->iov_size
+		? strlen(buffer) - position.lo
 		: iov->iov_size;
 	if(bytes <= 0) {
 		return OK;
